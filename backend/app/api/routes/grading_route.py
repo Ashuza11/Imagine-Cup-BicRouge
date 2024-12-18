@@ -8,11 +8,11 @@ from crud.student_grading_result_crud import (
     update_student_grade_crud,
 )
 
-from services.grading_openai import get_grading_from_llm
+# from services.grading_openai import get_grading_from_llm
 
 # from services.grading_azopenai import get_grading_from_llm
 # from services.gradding_tgllama import get_grading_from_llm
-# from services.gradding_ghllama import get_grading_from_llm
+from services.gradding_ghllama import get_grading_from_llm
 
 from crud.grading_crud import (
     validate_student_assignment,

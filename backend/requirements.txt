@@ -7,4 +7,6 @@ python-dotenv
 pyjwt
 together
 email-validator
+python-multipart
+azure-ai-inference
 

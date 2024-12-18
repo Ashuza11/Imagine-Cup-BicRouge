@@ -7,7 +7,7 @@ from core.config import settings
 
 # Azure OpenAI settings
 endpoint = "https://models.inference.ai.azure.com"
-model_name = "meta-llama-3-8b-instruct"
+model_name = "gpt-4o"
 token = settings.github_api_key
 
 # Initialize the client
