@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session, joinedload
 from pydantic import ValidationError
 from fastapi import HTTPException
 from datetime import datetime
-from backend.app.models.operation_models1 import Course, Enrollment
+from models.operation_models import Course, Enrollment
 from models.user_models import Teacher, Student
 from schemas.course import CourseCreate, CourseUpdate, CourseRead
 from schemas.teacher import TeacherRead
@@ -30,7 +30,7 @@ async def create_course(user: TeacherRead, db: Session, course: CourseCreate):
         code=course_code,
         created_at=datetime.now(),
         updated_at=datetime.now(),
-        url=course.url,  # Assuming `url` is part of the CourseCreate schema
+        syllabus_url=course.syllabus_url,  # Assuming `url` is part of the CourseCreate schema
     )
 
     db.add(db_course)
@@ -47,7 +47,7 @@ async def create_course(user: TeacherRead, db: Session, course: CourseCreate):
         teacher_name=db_course.teacher.name,
         created_at=db_course.created_at,
         updated_at=db_course.updated_at,
-        url=db_course.url,  # Include the URL in the response
+        syllabus_url=db_course.syllabus_url,  # Include the URL in the response
     )
     return course_read
 

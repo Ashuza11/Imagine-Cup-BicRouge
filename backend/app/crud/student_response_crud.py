@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from schemas.student_response import AssignmentResponsesCreate
-from backend.app.models.operation_models1 import StudentResponse
+from models.operation_models import StudentResponse
 
 
 def create_student_responses(

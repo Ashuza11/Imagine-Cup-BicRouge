@@ -7,13 +7,13 @@ class CourseBase(BaseModel):
     name: str
     section: Optional[str]
     subject: Optional[str]
-    url: Optional[HttpUrl] = None
+    syllabus_url: Optional[str] = None
     # course_chapters: Optional[List[Dict]] = None
 
 
 class CourseCreate(CourseBase):
     teacher_id: int
-    url: Optional[HttpUrl] = None
+    syllabus_url: Optional[str] = None
 
 
 class CourseRead(CourseBase):

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from datetime import datetime
-from backend.app.models.operation_models1 import Assignment, Enrollment
+from models.operation_models import Assignment, Enrollment
 from schemas.assignment import (
     AssignmentCreate,
     AssignmentUpdate,
