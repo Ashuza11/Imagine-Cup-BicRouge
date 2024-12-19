@@ -8,6 +8,7 @@ import { createCourseQuery } from '../query/coursesQuery';
 import { ClipLoader } from 'react-spinners';
 import CustomSelect from './CustomSelect';
 import { t } from 'i18next';
+import SyllabusUpload from './syllabusUpload';
 
 export const CreateClassForm = ({ onClose }) => {
   const [courseName, setCourseName] = useState('');
@@ -16,6 +17,7 @@ export const CreateClassForm = ({ onClose }) => {
   const {userRole, idUser, refetchCourses} = useContext(UserContext);
   const { showToast } = useToast();
   const [selectedValue, setSelectedValue] = useState('');
+  const [syllabusLocation, setSyllabusLocation] = useState('');
 
 
 
@@ -57,7 +59,7 @@ export const CreateClassForm = ({ onClose }) => {
 
   const handleSubmitCreateCourse = (e) => {
     e.preventDefault();
-    mutationCreateCourse.mutate({courseName,section, selectedValue, idUser});
+    mutationCreateCourse.mutate({courseName,section, selectedValue, idUser, syllabusLocation});
 
     onClose();
   };
@@ -122,6 +124,8 @@ export const CreateClassForm = ({ onClose }) => {
           onChange={(e) => setSelectedValue(e.target.value)}
           options={options}
         />
+
+        <SyllabusUpload onSuccess={(syllabusLocation) => setSyllabusLocation(syllabusLocation) }/>
 
         <div className="flex justify-end space-x-2">
           <button
