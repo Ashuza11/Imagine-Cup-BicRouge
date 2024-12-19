@@ -115,7 +115,9 @@ class StudentResponse(Base):
     comment = Column(Text, nullable=True)
     file = Column(String, nullable=True)
     assignment_id = Column(Integer, ForeignKey("assignment.id"))
-    student_id = Column(Integer, ForeignKey("student.id"))
+    student_id = Column(Integer, ForeignKey("student.id"
+
+))
     assignment = relationship("Assignment", back_populates="student_responses")
     question_id = Column(Integer, ForeignKey("question.id"))
     question = relationship("Question", back_populates="student_responses")

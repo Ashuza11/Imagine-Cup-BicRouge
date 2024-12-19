@@ -1,9 +1,11 @@
-export const createCourseQuery = async({courseName,section, selectedValue, idUser}) => {
+export const createCourseQuery = async({courseName,section, selectedValue, idUser, syllabus_url}) => {
+
     let requestBodyCreate = {
         name: courseName,
         section: section,
         subject: selectedValue,
         teacher_id: idUser,
+        syllabus_url : syllabus_url
     };
 
     const requestOptionsCreate = {

@@ -3,7 +3,7 @@ import { Upload } from "@aws-sdk/lib-storage";
 import s3Client from "../utils";
 import { ClipLoader } from "react-spinners";
 
-const FileUpload = ({onSuccess}) => {
+const FileUpload = ({onSuccess, setSyllabus_url}) => {
   const [file, setFile] = useState(null);
   const [upladSuccess, setUploadSuccess] = useState("");
   const [uploadError, setUploadError] = useState("");
@@ -34,10 +34,9 @@ const FileUpload = ({onSuccess}) => {
       });
 
       const res = await upload.done();
-      console.log(res)
+      onSuccess(res.Location)
       setUploadSuccess("Syllabus uploaded successfully!");
       setUploadError('')
-      onSuccess(res.Location)
     } catch (err) {
       console.error("Syllabus upload failed:", err);
       setUploadSuccess('')
@@ -52,7 +51,7 @@ const FileUpload = ({onSuccess}) => {
       <p>Syllabus</p>
       <div className="w-full flex items-center justify-between h-12">
         <input type="file" onChange={handleFileChange} />
-        <button onClick={handleFileUpload} className=" px-4 border py-2 rounded">
+        <button type="button" onClick={handleFileUpload} className=" px-4 border py-2 rounded">
           Upload
         </button>
       </div>
