@@ -21,6 +21,7 @@ class Course(Base):
     section = Column(String)
     subject = Column(String)
     code = Column(String, nullable=False, unique=True)
+    syllabus_url = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     teacher_id = Column(Integer, ForeignKey("teacher.id"))
@@ -31,19 +32,6 @@ class Course(Base):
     enrollments = relationship(
         "Enrollment", back_populates="course", foreign_keys="Enrollment.course_id"
     )
-
-
-# Added Features :
-# 1. For Syllabus Management
-
-# class CourseSyllabus(Base):
-#     __tablename__ = "course_syllabus"
-#     id = Column(Integer, primary_key=True)
-#     content = Column(Text, nullable=False)  # Syllabus content
-#     created_at = Column(DateTime, default=datetime.utcnow)
-#     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-#     course_id = Column(Integer, ForeignKey("course.id"))
-#     course = relationship("Course", back_populates="syllabus")
 
 
 class Enrollment(Base):
@@ -111,26 +99,6 @@ class Question(Base):
     teacher_responses = relationship(
         "TeacherResponse", back_populates="question", cascade="all, delete-orphan"
     )
-
-
-# # 2. For Question Types
-# class QuestionType(Base):
-#     __tablename__ = "question_type"
-#     id = Column(Integer, primary_key=True)
-#     name = Column(
-#         String, nullable=False
-#     )  # e.g., "multiple_choice", "open_ended", "illustrative"
-#     configuration = Column(JSON)  # Store type-specific configuration
-
-
-# # 3. For Multiple Choice Options
-# class QuestionOption(Base):
-#     __tablename__ = "question_option"
-#     id = Column(Integer, primary_key=True)
-#     content = Column(Text, nullable=False)
-#     is_correct = Column(Boolean, default=False)
-#     question_id = Column(Integer, ForeignKey("question.id"))
-#     question = relationship("Question", back_populates="options")
 
 
 class StudentResponse(Base):

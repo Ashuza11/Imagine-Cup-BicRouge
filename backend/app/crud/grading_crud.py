@@ -3,7 +3,7 @@ import json
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from models.operation_models import (
+from backend.app.models.operation_models1 import (
     Question,
     TeacherResponse,
     StudentResponse,

@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
 from sqlalchemy import and_
-from models.operation_models import Enrollment, Course
+from backend.app.models.operation_models1 import Enrollment, Course
 from schemas.enrollment import EnrollmentCreate, EnrollmentRead
 from schemas.course import CourseRead
 

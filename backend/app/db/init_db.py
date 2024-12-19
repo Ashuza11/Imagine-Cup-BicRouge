@@ -1,7 +1,7 @@
 from .session import Base, engine, SessionLocal
 
 from models.user_models import *
-from models.operation_models import *
+from backend.app.models.operation_models1 import *
 
 
 def init_db():

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models.operation_models import Question, TeacherResponse, Assignment
+from backend.app.models.operation_models1 import Question, TeacherResponse, Assignment
 from schemas.question import AssignmentQuestionsCreate
 from schemas.question import QuestionUpdate
 
