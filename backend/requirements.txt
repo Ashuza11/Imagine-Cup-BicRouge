@@ -9,4 +9,5 @@ together
 email-validator
 python-multipart
 azure-ai-inference
+PdfReader
 
