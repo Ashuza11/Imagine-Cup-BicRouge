@@ -64,9 +64,6 @@ export const CreateClassForm = ({ onClose }) => {
       idUser,
       syllabus_url,
     });
-
-    handleRecognize();
-
     onClose();
   };
 
@@ -77,15 +74,6 @@ export const CreateClassForm = ({ onClose }) => {
     onClose();
   };
 
-  const handleRecognize = async () => {
-    console.log("first");
-    const worker = await createWorker("eng");
-    const ret = await worker.recognize(
-      "https://recordingsbuclets.s3.us-east-2.amazonaws.com/ACTE_D'ENGAGEMENT_JENGA.pdf"
-    );
-    console.log(ret.data.text);
-    await worker.terminate();
-  };
 
   return userRole === "student" ? (
     <form onSubmit={handleSubmitJoinCourse} className="space-y-4">
@@ -123,9 +111,6 @@ export const CreateClassForm = ({ onClose }) => {
     </form>
   ) : (
     <form onSubmit={handleSubmitCreateCourse} className="space-y-4">
-      <button type="button" onClick={handleRecognize}>
-        test
-      </button>
       <div>
         <h2 className="text-xl font-semibold">{t("create_course")}</h2>
       </div>

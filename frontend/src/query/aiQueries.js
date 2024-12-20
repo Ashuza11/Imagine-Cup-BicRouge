@@ -1,7 +1,8 @@
-export const composeWithAiQuery = async ({ assignmentId, courseId, questionNumber }) => {
+export const composeWithAiQuery = async ({ assignmentId, courseId, questionNumber = 5 }) => {
     const requestBody = {
-      assignment_id: assignmentId,
-      course_id: courseId
+      assignment_id: String(assignmentId),
+      course_id: courseId ,
+      questionNumber
     };
   
     const token = localStorage.getItem("awesomeToken");
@@ -15,7 +16,7 @@ export const composeWithAiQuery = async ({ assignmentId, courseId, questionNumbe
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify(requestBody),
+      // body: JSON.stringify(requestBody),
     };
   
     const endpoint = `/api/assignments/${assignmentId}/compose_evaluation/?assignment_id=${assignmentId}&course_id=${courseId}&question_number=${questionNumber}`;
@@ -23,6 +24,7 @@ export const composeWithAiQuery = async ({ assignmentId, courseId, questionNumbe
     const data = await response.json();
   
     if (!response.ok) {
+      console.log(data)
       throw new Error(data.detail || 'Composition with AI failed');
     }
   

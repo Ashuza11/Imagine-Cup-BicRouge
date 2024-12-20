@@ -108,6 +108,15 @@ const Compose = () => {
 
     onSuccess: (data) => {
       console.log(data);
+
+      setCardsState(() => 
+        data.questions.map((question, idx) => ({
+          id:  idx + 1,
+          questionInput: question.question_text,
+          responseInput: question.teacher_answers[0].answer_text,
+          questionMaxPoint: question.max_points,
+        }))
+      );
     },
 
     onError: (error) => {
@@ -180,10 +189,12 @@ const Compose = () => {
               )}
             </button>
             <button
+            type="button"
+             disabled={mutationComposeWithAi.isPending}
               onClick={handleComposeWithAi}
               className="flex items-center gap-2 text-primary border border-primary rounded px-4 py-2 text-sm"
             >
-              <Brain /> <span>Compose with AI</span>
+              { mutationComposeWithAi.isPending ? <ClipLoader color="#D32F2F" className="" size={20} /> : <Brain />} <span>Compose with AI</span>
             </button>
           </div>
         </div>
@@ -313,7 +324,7 @@ const QuestionCard = ({
       </div>
       <div className="mt-2">
         <span className="font-bold">{`Question ${id}`}</span> <br />
-        <span className="font-bold">{questionInput}</span>
+        { !isClicked && <span className="font-bold">{questionInput}</span>}
       </div>
       {isClicked && (
         <div className="mt-4">
