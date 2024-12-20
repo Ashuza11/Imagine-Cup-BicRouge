@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from typing import Union, List
-from models.operation_models import Course
+from models.operation_models import Assignment, Course
 from .query_LLM import call_llm
 import json
 
@@ -28,6 +28,11 @@ async def compose_evaluation(
     """
     # Step 1: Fetch the course by ID
     course = db.query(Course).filter(Course.id == course_id).first()
+
+    # Step 2: Fetch the assignment by ID
+    assignment = db.query(Assignment).filter(Assignment.id == assignment_id).first()
+
+    # Step 3: Fetch the course content based on chapterss
     if not course:
         raise HTTPException(
             status_code=404, detail=f"Course with ID {course_id} not found."
@@ -63,7 +68,8 @@ async def compose_evaluation(
     # Step 3: Construct the prompt in French
     prompt = (
         f"Vous êtes un assistant pédagogique générant des questions d'évaluation et des réponses à partir des supports de cours. "
-        f"Sur la base du contenu suivant, générez une liste de {question_number} questions et leurs réponses correctes en français:\n\n"
+        f"Sur la base du contenu suivant, générez une liste de {question_number} questions et leurs réponses correctes en français.\n"
+        f"La somme des points attribués à chaque question doit etre égale à {assignment.points}. \n\n"
         f"{content}\n\n"
         "Utilisez le format suivant :\n"
         "{\n"
@@ -73,7 +79,7 @@ async def compose_evaluation(
         '      "question_text": "string",\n'
         '      "max_points": 0,\n'
         '      "teacher_answers": [\n'
-        "        {}\n"
+        "        {'answer_text' : 'string'}\n"
         "      ]\n"
         "    }\n"
         "  ]\n"

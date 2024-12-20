@@ -20,8 +20,7 @@ async def extract_chapters_from_syllabus(syllabus_content: str) -> List[dict]:
     
     Example:
     ```json
-    {{
-        "chapters": [
+         [
             {{
                 "number": 1,
                 "title": "Introduction",
@@ -33,7 +32,6 @@ async def extract_chapters_from_syllabus(syllabus_content: str) -> List[dict]:
                 "content": "This is the second chapter content."
             }}
         ]
-    }}
     ```
 
     Now, extract the chapters from this syllabus content:
@@ -51,7 +49,7 @@ async def extract_chapters_from_syllabus(syllabus_content: str) -> List[dict]:
 
     # Parse the JSON response safely
     try:
-        return json.loads(response)
+        return response
     except json.JSONDecodeError as e:
         raise HTTPException(
             status_code=500, detail=f"Error parsing LLM response: {str(e)}"
