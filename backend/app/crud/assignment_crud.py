@@ -20,7 +20,7 @@ async def create_assignment(
         points=assignment.points,
         due_date=assignment.due_date,
         course_id=assignment.course_id,
-        chapters=assignment.chapters,
+        # chapters=assignment.chapters,
         questions_number=assignment.questions_number,
     )
     db.add(db_assignment)

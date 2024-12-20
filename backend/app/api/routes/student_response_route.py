@@ -40,11 +40,15 @@ async def create_student_responses_endpoint(
         )
         # print(grading_data)
 
+        # # Load the course syllabus context
+        # course_syllabus = db.query(Course).filter(Course.id == course_id).first()
+
         # Prepare the data for the grading endpoint
         assessment_data = AssessmentData(
             teacher_corrected_assessment=grading_data["teacher_corrected_assessment"],
             grading_criteria=grading_data["grading_criteria"],
             student_responses=grading_data["student_responses"],
+            # course_syllabus=
         )
         # Get the grading from the LLM
         grading = await get_grading_endpoint(assessment_data)
