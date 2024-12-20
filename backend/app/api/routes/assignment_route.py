@@ -154,7 +154,7 @@ async def generate_evaluation(
     assignment_id: int,
     course_id: int,
     question_number: int,
-    chapters: Union[str, List[str]] = None,
+    # chapters: Optional[str],
     db: Session = Depends(get_db),
 ):
     try:
@@ -163,7 +163,7 @@ async def generate_evaluation(
             assignment_id=assignment_id,
             course_id=course_id,
             question_number=question_number,
-            chapters=chapters,
+            # chapters=chapters,
         )
         return result  # return the result as a dictionary
     except HTTPException as exc:

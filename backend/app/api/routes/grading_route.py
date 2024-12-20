@@ -22,6 +22,7 @@ from crud.grading_crud import (
 
 router = APIRouter()
 
+
 grading_output = {
     "advice": "Commentaire global ici. En t'adressant à l'étudiant, explique ce qu'il doit améliorer et pourquoi.",
     "grading": {

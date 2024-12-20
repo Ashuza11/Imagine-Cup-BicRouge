@@ -20,7 +20,7 @@ async def extract_chapters_from_syllabus(syllabus_content: str) -> List[dict]:
     
     Example:
     ```json
-         [
+        [
             {{
                 "number": 1,
                 "title": "Introduction",

@@ -1,9 +1,12 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from typing import Union, List
-from models.operation_models import Assignment, Course
+from typing import Union, List, Optional
+from models.operation_models import Course
 from .query_LLM import call_llm
 import json
+
+
+# Take Ass
 
 
 async def compose_evaluation(
@@ -11,7 +14,7 @@ async def compose_evaluation(
     assignment_id: int,
     course_id: int,
     question_number: int,
-    chapters: Union[str, List[str]] = None,
+    # chapters: Optional[str],
 ):
     """
     Generate evaluation questions from course content using LLM.
@@ -39,31 +42,32 @@ async def compose_evaluation(
         )
 
     # Step 2: Retrieve course content based on chapterss
-    if chapters:
-        if isinstance(chapters, str):
-            chapters_to_consider = [chapters]
-        elif isinstance(chapters, list):
-            chapters_to_consider = chapters
-        else:
-            raise HTTPException(
-                status_code=400, detail="Invalid chapters type provided."
-            )
+    # if chapters:
+    #     if isinstance(chapters, str):
+    #         chapters_to_consider = [chapters]
+    #     elif isinstance(chapters, list):
+    #         chapters_to_consider = chapters
+    #     else:
+    #         raise HTTPException(
+    #             status_code=400, detail="Invalid chapters type provided."
+    #         )
 
-        content = "\n".join(
-            [
-                chapters_content
-                for chapters_content in course.course_chapters
-                if chapters_content["name"] in chapters_to_consider
-            ]
-        )
+    #     content = "\n".join(
+    #         [
+    #             chapters_content
+    #             for chapters_content in course.course_chapters
+    #             if chapters_content["name"] in chapters_to_consider
+    #         ]
+    #     )
 
-        if not content:
-            raise HTTPException(
-                status_code=400,
-                detail=f"None of the specified chapterss were found: {chapters_to_consider}.",
-            )
-    else:
-        content = course.course_chapters  # Whole course content
+    #     if not content:
+    #         raise HTTPException(
+    #             status_code=400,
+    #             detail=f"None of the specified chapterss were found: {chapters_to_consider}.",
+    #         )
+    # else:
+
+    content = course.course_chapters  # Whole course content
 
     # Step 3: Construct the prompt in French
     prompt = (

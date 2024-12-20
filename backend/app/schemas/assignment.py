@@ -10,7 +10,7 @@ class AssignmentBase(BaseModel):
     composition: bool = False
     course_id: int
     due_date: Optional[datetime] = None
-    chapters: Union[str, List[str]] = None
+    # chapters: Optional[str]
     questions_number: Optional[int] = None
 
 
@@ -28,7 +28,7 @@ class AssignmentRead(BaseModel):
     created_at: datetime
     updated_at: datetime
     course_id: int
-    chapters: Optional[str]
+    # chapters: Optional[str]
     questions_number: Optional[int]
 
     class Config:
@@ -42,7 +42,7 @@ class AssignmentUpdate(BaseModel):
     composition: bool = False
     due_date: Optional[datetime] = None
     course_id: Optional[int] = None
-    chapter: Union[str, List[str]] = None
+    # chapters: Optional[str]
     questions_number: Optional[int] = None
 
     class Config:

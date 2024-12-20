@@ -1,10 +1,10 @@
-import openai
+from openai import OpenAI
 import json
 import re
 from core.config import settings
 
 # Access the OpenAI API key
-openai.api_key = settings.openai_api_key
+# openai.api_key = settings.openai_api_key
 
 
 # Handle other potential issues by making sure JSON strings are properly quoted
@@ -22,9 +22,10 @@ async def get_grading_from_llm(
 ):
     print("Role prompt:", grading_elements)
     try:
+        client = OpenAI(api_key=settings.openai_api_key)
         # Call OpenAI API
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+        response = client.ChatCompletion.create(
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": role_prompt},
                 {"role": "user", "content": grading_elements},
