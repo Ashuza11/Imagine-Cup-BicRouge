@@ -12,7 +12,7 @@ from schemas.teacher import TeacherRead
 
 # Create a new assignment
 async def create_assignment(
-    user: TeacherRead, db: Session, assignment: AssignmentCreate
+    db: Session, user: TeacherRead, assignment: AssignmentCreate
 ):
     db_assignment = Assignment(
         title=assignment.title,
@@ -20,6 +20,8 @@ async def create_assignment(
         points=assignment.points,
         due_date=assignment.due_date,
         course_id=assignment.course_id,
+        chapters=assignment.chapters,
+        questions_number=assignment.questions_number,
     )
     db.add(db_assignment)
     db.commit()

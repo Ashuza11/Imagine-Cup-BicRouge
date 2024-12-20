@@ -31,7 +31,7 @@ Routes:
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Union
-from typing import List
+from typing import List, Dict
 from db.init_db import get_db
 from crud.course_crud import (
     create_course,
@@ -40,9 +40,9 @@ from crud.course_crud import (
     update_course,
     delete_course,
     get_teacher_and_students,
+    get_chapters_by_course_id,
 )
-from models.user_models import Teacher, Student
-from schemas.course import CourseCreate, CourseRead, CourseUpdate
+from schemas.course import CourseCreate, CourseRead, CourseUpdate, Chapter
 from core.security import check_user_active
 
 
@@ -167,3 +167,24 @@ def get_course_teacher_and_students(
         )
 
     return result
+
+
+@router.get("/courses/{course_id}/chapters", response_model=List[Chapter])
+async def get_course_chapters(course_id: int, db: Session = Depends(get_db)):
+    course_data = await get_chapters_by_course_id(course_id, db)
+
+    if not course_data:
+        raise HTTPException(status_code=404, detail="Course or chapters not found")
+
+    # Transform the data to match the Chapter model
+    transformed_data = [
+        {
+            "number": idx + 1,  # Assuming you generate IDs sequentially
+            "title": chapter["title"],
+            "content": chapter["content"],
+        }
+        for idx, chapter in enumerate(course_data["chapters"])
+    ]
+
+    # print("Transformed course data:", transformed_data)
+    return transformed_data

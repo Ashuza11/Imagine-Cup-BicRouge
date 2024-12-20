@@ -3,17 +3,29 @@ from datetime import datetime
 from typing import Optional, List, Dict
 
 
+class Chapter(BaseModel):
+    number: int
+    title: str
+    content: str
+
+
+class ChaptersResponse(BaseModel):
+    chapters: List[Chapter]
+
+
 class CourseBase(BaseModel):
     name: str
     section: Optional[str]
     subject: Optional[str]
     syllabus_url: Optional[str] = None
-    # course_chapters: Optional[List[Dict]] = None
+    course_chapters: Optional[List[Dict]] = None
 
 
 class CourseCreate(CourseBase):
     teacher_id: int
     syllabus_url: Optional[str] = None
+    syllabus_content: Optional[str] = None
+    course_chapters: Optional[List[Dict]] = None
 
 
 class CourseRead(CourseBase):

@@ -12,6 +12,7 @@ from sqlalchemy import (
     JSON,
 )
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import ARRAY  # Add this import
 
 
 class Course(Base):
@@ -22,6 +23,8 @@ class Course(Base):
     subject = Column(String)
     code = Column(String, nullable=False, unique=True)
     syllabus_url = Column(String, nullable=True)
+    syllabus_content = Column(Text, nullable=True)
+    course_chapters = Column(JSON, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     teacher_id = Column(Integer, ForeignKey("teacher.id"))
@@ -60,6 +63,8 @@ class Assignment(Base):
     composition = Column(
         Boolean, default=False
     )  # (False, True) doesn't ha composition, has composition
+    chapters = Column(String, nullable=True)
+    questions_number = Column(Integer, nullable=True)
     due_date = Column(DateTime)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

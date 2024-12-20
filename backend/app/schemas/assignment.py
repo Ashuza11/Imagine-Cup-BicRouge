@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union, List
 
 
 class AssignmentBase(BaseModel):
@@ -8,8 +8,10 @@ class AssignmentBase(BaseModel):
     instruction: Optional[str] = None
     points: int
     composition: bool = False
-    due_date: Optional[datetime] = None
     course_id: int
+    due_date: Optional[datetime] = None
+    chapters: Union[str, List[str]] = None
+    questions_number: Optional[int] = None
 
 
 class AssignmentCreate(AssignmentBase):
@@ -26,6 +28,8 @@ class AssignmentRead(BaseModel):
     created_at: datetime
     updated_at: datetime
     course_id: int
+    chapters: Optional[str]
+    questions_number: Optional[int]
 
     class Config:
         from_attributes = True
@@ -38,7 +42,8 @@ class AssignmentUpdate(BaseModel):
     composition: bool = False
     due_date: Optional[datetime] = None
     course_id: Optional[int] = None
-    # decision: Optional[bool] = None
+    chapter: Union[str, List[str]] = None
+    questions_number: Optional[int] = None
 
     class Config:
         from_attributes = True

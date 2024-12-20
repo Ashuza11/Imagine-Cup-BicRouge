@@ -2,26 +2,73 @@ import random
 import string
 from typing import List
 from sqlalchemy.orm import Session, joinedload
-from pydantic import ValidationError
+from pydantic import HttpUrl
+import requests
+from io import BytesIO
+from PyPDF2 import PdfReader
 from fastapi import HTTPException
 from datetime import datetime
 from models.operation_models import Course, Enrollment
 from models.user_models import Teacher, Student
 from schemas.course import CourseCreate, CourseUpdate, CourseRead
 from schemas.teacher import TeacherRead
+from services.course_chapters import extract_chapters_from_syllabus
 
 
 def generate_course_code(length=7):
     return "".join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 
-async def create_course(user: TeacherRead, db: Session, course: CourseCreate):
+# Step 1: Download the PDF file
+async def download_pdf(syllabus_url: HttpUrl) -> BytesIO:
+    try:
+        response = requests.get(syllabus_url)
+        response.raise_for_status()
+        return BytesIO(response.content)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error downloading syllabus PDF: {str(e)}"
+        )
+
+
+# Step 2: Extract text from the PDF
+async def extract_text_from_pdf(pdf_content: BytesIO) -> str:
+    try:
+        reader = PdfReader(pdf_content)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text()
+        return text.strip()
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error extracting text from PDF: {str(e)}"
+        )
+
+
+# Main function to create a course
+async def create_course(
+    user: TeacherRead, db: Session, course: CourseCreate
+) -> CourseRead:
+    # Generate a unique course code
     while True:
         course_code = generate_course_code()
         existing_course = db.query(Course).filter_by(code=course_code).first()
         if not existing_course:
             break
 
+    # Download the syllabus PDF
+    if not course.syllabus_url:
+        raise HTTPException(status_code=400, detail="Syllabus URL is required")
+
+    pdf_content = await download_pdf(course.syllabus_url)
+
+    # Extract syllabus content from the PDF
+    syllabus_content = await extract_text_from_pdf(pdf_content)
+    # Extract chapters from the syllabus content using the LLM
+    course_chapters = await extract_chapters_from_syllabus(syllabus_content)
+    print(course_chapters)
+
+    # Create the course object
     db_course = Course(
         name=course.name,
         section=course.section,
@@ -30,15 +77,18 @@ async def create_course(user: TeacherRead, db: Session, course: CourseCreate):
         code=course_code,
         created_at=datetime.now(),
         updated_at=datetime.now(),
-        syllabus_url=course.syllabus_url,  # Assuming `url` is part of the CourseCreate schema
+        syllabus_url=course.syllabus_url,
+        syllabus_content=syllabus_content,
+        course_chapters=course_chapters,
     )
 
+    # Add to database
     db.add(db_course)
     db.commit()
     db.refresh(db_course)
 
-    # Populate the teacher_name field for the response
-    course_read = CourseRead(
+    # Prepare the response
+    return CourseRead(
         id=db_course.id,
         name=db_course.name,
         section=db_course.section,
@@ -47,9 +97,8 @@ async def create_course(user: TeacherRead, db: Session, course: CourseCreate):
         teacher_name=db_course.teacher.name,
         created_at=db_course.created_at,
         updated_at=db_course.updated_at,
-        syllabus_url=db_course.syllabus_url,  # Include the URL in the response
+        syllabus_url=db_course.syllabus_url,
     )
-    return course_read
 
 
 async def get_all_courses(user: TeacherRead, db: Session) -> List[CourseRead]:
@@ -113,6 +162,16 @@ async def update_course(
     db.commit()
     db.refresh(db_course)
     return CourseRead.from_orm(db_course)
+
+
+# Get all course chapters and their IDs
+async def get_chapters_by_course_id(course_id: int, db: Session):
+    course = db.query(Course).filter(Course.id == course_id).first()
+
+    if not course:
+        return None
+
+    return course.course_chapters
 
 
 # Get the teacher and a list of all of students who joined a course
