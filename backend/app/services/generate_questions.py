@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from typing import Union, List, Optional
-from models.operation_models import Course
+from models.operation_models import Assignment, Course
 from .query_LLM import call_llm
 import json
 

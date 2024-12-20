@@ -24,7 +24,7 @@ async def get_grading_from_llm(
     try:
         client = OpenAI(api_key=settings.openai_api_key)
         # Call OpenAI API
-        response = client.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": role_prompt},
@@ -40,7 +40,7 @@ async def get_grading_from_llm(
         )
 
         # Get the response text
-        result = response["choices"][0]["message"]["content"]
+        result = response.choices[0].message.content
         print("Response from OpenAI:", result)
 
         # Escape problematic quotes inside the JSON string
@@ -48,7 +48,8 @@ async def get_grading_from_llm(
 
         # Handle potential issues with French apostrophes by replacing them correctly
         sanitized_result = (
-            sanitized_result.replace("“", '"').replace("”", '"').replace("'", "'")
+            sanitized_result.replace("“", '"').replace(
+                "”", '"').replace("'", "'")
         )
 
         sanitized_result = ensure_proper_json_format(sanitized_result)
