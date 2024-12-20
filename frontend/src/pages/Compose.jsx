@@ -103,7 +103,7 @@ const Compose = () => {
     },
   });
 
-  const mutationCOposeWithAi = useMutation({
+  const mutationComposeWithAi = useMutation({
     mutationFn: composeWithAiQuery,
 
     onSuccess: (data) => {
@@ -129,7 +129,7 @@ const Compose = () => {
   };
 
   const handleComposeWithAi = () => {
-    mutationCOposeWithAi.mutate({
+    mutationComposeWithAi.mutate({
       assignmentId,
       courseId,
       questionNumber: 5,
