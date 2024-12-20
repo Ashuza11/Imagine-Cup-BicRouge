@@ -1,4 +1,4 @@
-export const composeWithAiQuery = async ({ assignmentId, courseId }) => {
+export const composeWithAiQuery = async ({ assignmentId, courseId, questionNumber }) => {
     const requestBody = {
       assignment_id: assignmentId,
       course_id: courseId
@@ -18,7 +18,7 @@ export const composeWithAiQuery = async ({ assignmentId, courseId }) => {
       body: JSON.stringify(requestBody),
     };
   
-    const endpoint = '/api/ai/compose';
+    const endpoint = `/api/assignments/${assignmentId}/compose_evaluation/?assignment_id=${assignmentId}&course_id=${courseId}&question_number=${questionNumber}`;
     const response = await fetch(endpoint, requestOptions);
     const data = await response.json();
   

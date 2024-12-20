@@ -1,15 +1,30 @@
-import React, { useState, useContext, useEffect, useRef, useCallback } from 'react';
-import CustomInput from '../components/CustomInput';
-import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
-import { UserContext } from '../context/UserContext';
-import { useToast } from '../context/ToastContext';
-import { useMutation } from '@tanstack/react-query';
-import { ClipLoader } from 'react-spinners';
-import { CreateQuestionsQuery } from '../query/AssignmentQuery';
-import DashboardButton from '../components/DashboardButton';
-import { X, MoreVertical, CirclePlus, Copy, Trash2, GripHorizontal, ClipboardPenLine } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
+import CustomInput from "../components/CustomInput";
+import { useNavigate, useParams, useLocation, Link } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
+import { useToast } from "../context/ToastContext";
+import { useMutation } from "@tanstack/react-query";
+import { ClipLoader } from "react-spinners";
+import { CreateQuestionsQuery } from "../query/AssignmentQuery";
+import DashboardButton from "../components/DashboardButton";
+import {
+  X,
+  MoreVertical,
+  CirclePlus,
+  Copy,
+  Trash2,
+  GripHorizontal,
+  ClipboardPenLine,
+  Brain,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { composeWithAiQuery } from "../query/aiQueries";
 
 const Compose = () => {
   const navigate = useNavigate();
@@ -18,13 +33,18 @@ const Compose = () => {
   const { showToast } = useToast();
   const [isFirstCardClicked, setIsFirstCardClicked] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
-  const { title = '', instruction = '', cards = [], courseId = '', assignmentId = '' } = location.state || {};
+  const {
+    title = "",
+    instruction = "",
+    cards = [],
+    courseId = "",
+    assignmentId = "",
+  } = location.state || {};
   const [cardsState, setCardsState] = useState(cards);
   const { t } = useTranslation();
 
-
   useEffect(() => {
-    localStorage.setItem('cards', JSON.stringify(cardsState));
+    localStorage.setItem("cards", JSON.stringify(cardsState));
   }, [cardsState]);
 
   const onCardClick = (isClicked) => {
@@ -34,7 +54,12 @@ const Compose = () => {
   const onAddCard = () => {
     setCardsState((prevCards) => [
       ...prevCards,
-      { id: prevCards.length + 1, questionInput: '', responseInput: '', questionMaxPoint: 0 },
+      {
+        id: prevCards.length + 1,
+        questionInput: "",
+        responseInput: "",
+        questionMaxPoint: 0,
+      },
     ]);
   };
 
@@ -50,11 +75,12 @@ const Compose = () => {
 
   const onCardChange = (id, field, value) => {
     setCardsState((prevCards) =>
-      prevCards.map((card) => (card.id === id ? { ...card, [field]: value } : card))
-
+      prevCards.map((card) =>
+        card.id === id ? { ...card, [field]: value } : card
+      )
     );
     if (cards.length > 0) {
-      localStorage.setItem('cards', JSON.stringify(cards));
+      localStorage.setItem("cards", JSON.stringify(cards));
     }
   };
 
@@ -66,32 +92,49 @@ const Compose = () => {
     mutationFn: CreateQuestionsQuery,
 
     onSuccess: (data) => {
-      showToast(t('success_exam'), "success");
+      showToast(t("success_exam"), "success");
       // Clear localStorage after successful form submission
-      localStorage.removeItem('cards');
+      localStorage.removeItem("cards");
       navigate(`/${userRole}/course/${courseId}/tache`);
     },
-    
+
     onError: (error) => {
-      showToast(t('error_exam'), "destructive");
+      showToast(t("error_exam"), "destructive");
+    },
+  });
+
+  const mutationCOposeWithAi = useMutation({
+    mutationFn: composeWithAiQuery,
+
+    onSuccess: (data) => {
+      console.log(data);
+    },
+
+    onError: (error) => {
+      console.log(error);
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const questions = cardsState.map(card => ({
+    const questions = cardsState.map((card) => ({
       question_text: card.questionInput,
       max_points: card.questionMaxPoint,
-      teacher_answers: [
-        { answer_text: card.responseInput }
-      ]
+      teacher_answers: [{ answer_text: card.responseInput }],
     }));
     mutationCreateQuestion.mutate({
       assignmentId: assignmentId,
-      questions: questions
+      questions: questions,
     });
   };
-  
+
+  const handleComposeWithAi = () => {
+    mutationCOposeWithAi.mutate({
+      assignmentId,
+      courseId,
+      questionNumber: 5,
+    });
+  };
 
   const handlePublish = () => {
     setIsPublished(true);
@@ -100,14 +143,14 @@ const Compose = () => {
 
   return (
     <div className="bg-background h-screen overflow-auto">
-      <form onSubmit={handleSubmit}>    
+      <form onSubmit={handleSubmit}>
         <div className="flex items-center bg-white justify-between p-4 border-b border-gray-300 sticky top-0 z-50">
           <div className="flex gap-4">
             <div className="flex items-center space-x-2">
               <div className="bg-accent p-2 rounded-full">
                 <ClipboardPenLine size={24} className="text-primary" />
               </div>
-              <h2 className="text-xl font-semibold">{t('compose')}</h2>
+              <h2 className="text-xl font-semibold">{t("compose")}</h2>
             </div>
           </div>
           <div className="flex justify-end space-x-4">
@@ -117,37 +160,45 @@ const Compose = () => {
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded flex items-center space-x-2"
               >
                 <X size={24} />
-                <span>{t('cancel')}</span>
+                <span>{t("cancel")}</span>
               </button>
             </Link>
-            
+
             <button
               type="submit"
               className={`${
-                isPublished ? 'bg-green-600' : 'bg-primary hover:bg-primary-dark'
+                isPublished
+                  ? "bg-green-600"
+                  : "bg-primary hover:bg-primary-dark"
               } text-white px-4 py-2 rounded flex items-center space-x-2`}
               disabled={mutationCreateQuestion.isLoading}
             >
               {mutationCreateQuestion.isLoading ? (
                 <ClipLoader size={24} color="#fff" />
               ) : (
-                <span>{isPublished ? t('published_title') : t('save')}</span>
+                <span>{isPublished ? t("published_title") : t("save")}</span>
               )}
+            </button>
+            <button
+              onClick={handleComposeWithAi}
+              className="flex items-center gap-2 text-primary border border-primary rounded px-4 py-2 text-sm"
+            >
+              <Brain /> <span>Compose with AI</span>
             </button>
           </div>
         </div>
-        
+
         <div className="flex flex-col items-center pt-4 px-24">
-          <div className='flex flex-row gap-4 w-full justify-center'>
-            <div className='flex flex-col items-start basis-1/2 grow'>
-              <div 
+          <div className="flex flex-row gap-4 w-full justify-center">
+            <div className="flex flex-col items-start basis-1/2 grow">
+              <div
                 className="bg-white shadow-lg p-4 rounded-lg w-full mb-5 text-left border-t-8 border-red-600"
                 onClick={handleFirstCardClick}
               >
                 <h3 className="text-lg font-semibold">{title}</h3>
                 <p className="mt-2">{instruction}</p>
               </div>
-              
+
               {cardsState.map((card) => (
                 <QuestionCard
                   key={card.id}
@@ -170,7 +221,7 @@ const Compose = () => {
                 onClick={onAddCard}
               >
                 <CirclePlus size={24} />
-                <span>{t('add_question')}</span>
+                <span>{t("add_question")}</span>
               </button>
             </div>
           </div>
@@ -182,17 +233,29 @@ const Compose = () => {
 
 export default Compose;
 
-
-const QuestionCard = ({ id, questionInput, responseInput, questionMaxPoint, t, isFirstCardClicked, onCardClick, onAddCard, onDuplicateCard, onDeleteCard, onCardChange }) => {
+const QuestionCard = ({
+  id,
+  questionInput,
+  responseInput,
+  questionMaxPoint,
+  t,
+  isFirstCardClicked,
+  onCardClick,
+  onAddCard,
+  onDuplicateCard,
+  onDeleteCard,
+  onCardChange,
+}) => {
   const [isClicked, setIsClicked] = useState(false);
   const cardRef = useRef(null);
-
 
   const handleClickOutside = useCallback((event) => {
     console.log(cardRef.current);
     console.log(event.target);
     if (cardRef.current && !cardRef.current.contains(event.target)) {
-      console.log(`${cardRef.current} ${!cardRef.current.contains(event.target)}`)
+      console.log(
+        `${cardRef.current} ${!cardRef.current.contains(event.target)}`
+      );
       setIsClicked(false);
     }
   }, []);
@@ -211,9 +274,9 @@ const QuestionCard = ({ id, questionInput, responseInput, questionMaxPoint, t, i
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [handleClickOutside]);
 
@@ -221,7 +284,7 @@ const QuestionCard = ({ id, questionInput, responseInput, questionMaxPoint, t, i
     <div
       ref={cardRef}
       className={`bg-white shadow-lg p-4 rounded-lg w-full mb-5 transform transition-all duration-300 ease-in-out ${
-        isClicked ? 'border-l-8 border-red-600 scale-y-105' : 'scale-100'
+        isClicked ? "border-l-8 border-red-600 scale-y-105" : "scale-100"
       }`}
       onClick={handleCardClick}
     >
@@ -230,13 +293,17 @@ const QuestionCard = ({ id, questionInput, responseInput, questionMaxPoint, t, i
         <div className="flex items-center space-x-2">
           <button
             className={`${
-              id === 1 ? 'hidden' : 'bg-red-600 hover:bg-red-700'
+              id === 1 ? "hidden" : "bg-red-600 hover:bg-red-700"
             } text-white rounded-full p-2 focus:outline-none`}
             onClick={handleDeleteCardClick}
           >
             <Trash2 size={18} />
           </button>
-          <DashboardButton variant="ghost" size="icon" onClick={() => onDuplicateCard(id)}>
+          <DashboardButton
+            variant="ghost"
+            size="icon"
+            onClick={() => onDuplicateCard(id)}
+          >
             <Copy size={18} />
           </DashboardButton>
           <DashboardButton variant="ghost" size="icon">
@@ -244,29 +311,31 @@ const QuestionCard = ({ id, questionInput, responseInput, questionMaxPoint, t, i
           </DashboardButton>
         </div>
       </div>
-      <div className='mt-2'>
-          <span className="font-bold">{`Question ${id}`}</span> <br/>
-          <span className="font-bold">{questionInput}</span>
+      <div className="mt-2">
+        <span className="font-bold">{`Question ${id}`}</span> <br />
+        <span className="font-bold">{questionInput}</span>
       </div>
       {isClicked && (
         <div className="mt-4">
           <CustomInput
-            label={t('question')}
+            label={t("question")}
             type="text"
             value={questionInput}
-            onChange={(e) => onCardChange(id, 'questionInput', e.target.value)}
+            onChange={(e) => onCardChange(id, "questionInput", e.target.value)}
           />
           <CustomInput
-            label={t('answer')}
+            label={t("answer")}
             type="text"
             value={responseInput}
-            onChange={(e) => onCardChange(id, 'responseInput', e.target.value)}
+            onChange={(e) => onCardChange(id, "responseInput", e.target.value)}
           />
           <CustomInput
-            label={t('point')}
+            label={t("point")}
             type="number"
             value={questionMaxPoint}
-            onChange={(e) => onCardChange(id, 'questionMaxPoint', e.target.value)}
+            onChange={(e) =>
+              onCardChange(id, "questionMaxPoint", e.target.value)
+            }
           />
         </div>
       )}
