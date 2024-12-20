@@ -46,7 +46,7 @@ async def get_grading_from_llm(
         print("Response from LLAMA3-8B-Instruct:", result)
 
         # Escape problematic quotes inside the JSON string
-        sanitized_result = result.replace("“", '"').replace("”", '"')
+        sanitized_result = result.replace("'", '"').replace("“", '"').replace("”", '"')
         print("Sanitized response:", sanitized_result)
 
         # Attempt to find valid JSON in the response
@@ -66,7 +66,7 @@ async def get_grading_from_llm(
 
             try:
                 # Now attempt to parse the JSON
-                grading_result = json.loads(result_json)
+                grading_result = result_json
                 return grading_result
             except json.JSONDecodeError as e:
                 print(f"Error decoding JSON response: {e}")
