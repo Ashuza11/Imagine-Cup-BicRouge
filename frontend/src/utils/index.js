@@ -1,34 +1,25 @@
-import { S3Client } from "@aws-sdk/client-s3";
-import { Upload } from "@aws-sdk/lib-storage";
+import { BlobServiceClient, StorageSharedKeyCredential } from "@azure/storage-blob";
 
-const s3Client = new S3Client({
-  region: "us-east-2",
-  credentials: {
-    accessKeyId: import.meta.env.VITE_ACCESS_KEY_ID,
-    secretAccessKey: import.meta.env.VITE_SECRET_ACCESS_KEY,
-  },
-});
+const blobServiceClient = new BlobServiceClient(
+  `https://${import.meta.env.VITE_AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
+  new StorageSharedKeyCredential(
+    import.meta.env.VITE_AZURE_STORAGE_ACCOUNT_NAME,
+    import.meta.env.VITE_AZURE_STORAGE_ACCOUNT_KEY
+  )
+);
 
-export const uploadFileToS3 = async (file) => {
+export const uploadFileToAzure = async (file) => {
   try {
-    const upload = new Upload({
-      client: s3Client,
-      params: {
-        Bucket: import.meta.env.REACT_APP_S3_BUCKET_NAME,
-        Key: file.name, // File name as the key
-        Body: file, // File content
-      },
-    });
+    const containerClient = blobServiceClient.getContainerClient(import.meta.env.VITE_AZURE_CONTAINER_NAME);
+    const blockBlobClient = containerClient.getBlockBlobClient(file.name);
 
-    await upload.done();
+    await blockBlobClient.uploadBrowserData(file);
     console.log("File uploaded successfully:", file.name);
-    return `https://${import.meta.env.REACT_APP_S3_BUCKET_NAME}.s3.${
-      import.meta.env.REACT_APP_AWS_REGION
-    }.amazonaws.com/${file.name}`;
+    return blockBlobClient.url;
   } catch (error) {
     console.error("Error uploading file:", error);
     throw error;
   }
 };
 
-export default s3Client;
+export default blobServiceClient;

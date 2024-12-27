@@ -162,7 +162,9 @@
     "course_title_required": "Intitulé du cours (obligatoire)",
     "section": "Section",
     "select_option": "Sélectionnez une option",
-     "no_test_created": "Vous n'avez aucun épreuve créée"
+    "no_test_created": "Vous n'avez aucun épreuve créée",
+    "Compose_BTN": "Compose with AI "
+
 
 }
   

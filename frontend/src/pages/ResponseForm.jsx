@@ -135,7 +135,7 @@ const ResponseForm = () => {
 
     return (
         <>
-            <TimerModal sec={10} onCountDown={() => forcedSubmit()} />
+            {/* <TimerModal sec={10} onCountDown={() => forcedSubmit()} /> */}
             <div className="bg-background h-screen overflow-auto">
                 <form onSubmit={handleSubmit}>
                     <div className="flex items-center bg-white justify-between p-4 border-b border-gray-300 sticky top-0 z-50">

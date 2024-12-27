@@ -141,7 +141,7 @@ const Compose = () => {
     mutationComposeWithAi.mutate({
       assignmentId,
       courseId,
-      questionNumber: 5,
+      questionNumber: 3,
     });
   };
 
@@ -194,7 +194,7 @@ const Compose = () => {
               onClick={handleComposeWithAi}
               className="flex items-center gap-2 text-primary border border-primary rounded px-4 py-2 text-sm"
             >
-              { mutationComposeWithAi.isPending ? <ClipLoader color="#D32F2F" className="" size={20} /> : <Brain />} <span>Compose with AI</span>
+              { mutationComposeWithAi.isPending ? <ClipLoader color="#D32F2F" className="" size={20} /> : <Brain />} <span>{t("Compose_BTN")}</span>
             </button>
           </div>
         </div>

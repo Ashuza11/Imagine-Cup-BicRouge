@@ -158,8 +158,8 @@
     "course_title_required": "Course title (required)",
     "section": "Section",
     "select_option": "Select an option",
-    "no_test_created": "You have no assignment created"
-    
+    "no_test_created": "You have no assignment created",
+    "Compose_BTN": "Composer avec l'IA"
     
   }
   
