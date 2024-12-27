@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlalchemy
+passlib
+bcrypt==3.2.0
+python-dotenv
+pyjwt
+together
+email-validator
+python-multipart
+azure-ai-inference
+PdfReader
+openai
+PyPDF2
